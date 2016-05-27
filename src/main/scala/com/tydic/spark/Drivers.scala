@@ -15,14 +15,23 @@ object Drivers {
     val conf = new SparkConf().setMaster("local").setAppName("wordcount")
     val sc = new SparkContext(conf)
 
+    val validityCount = sc.accumulator(0)
+    val invalidityCount = sc.accumulator(0)
+
     val textRdd = sc.textFile(filePath)
     val count = textRdd.map( line => {
       val array = DataUtils.split(line,40,"\\^\\|~")
       val timeLength = if(array(13).isEmpty()) 0 else array(13).toInt
       val dpi = new DpiData(array(31),array(11),timeLength,array(39),array(38),array(37))
+
+      if(dpi.validityMark)validityCount += 1
+      else invalidityCount += 1
+
       dpi
     }).count()
 
     println(count)
+    println("validityCount:" + validityCount)
+    println("invalidityCount:" + invalidityCount)
   }
 }

@@ -9,7 +9,11 @@ class DpiData(val mdn: String, val action: String, val timeLength: Int, val prot
   /**
     * 数据有效性标志
     */
-  val validityMark = false
+  val validityMark = {
+    if(mdn.isEmpty)  false
+    else if(mdn.length < 11 )false
+    else true
+  }
 
   /**
     * 数据无效性的值
@@ -23,5 +27,6 @@ class DpiData(val mdn: String, val action: String, val timeLength: Int, val prot
     * 0:未知
     */
   val dataBusinessType = 0
+
 
 }
